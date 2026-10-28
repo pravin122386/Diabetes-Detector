@@ -1,0 +1,41 @@
+recipe_id,recipe_name,region,cuisine,meal_type,diet_type,serving_size_g,calories,protein_g,carbohydrates_g,fat_g,fiber_g,sugar_g,sodium_mg,ingredients,allergens
+1,Steamed Rice Idli with Sambhar,South Indian,Tamil Nadu,Breakfast,Vegan,250.0,320.0,10.5,62.0,3.2,7.8,3.1,420.0,"Rice, Urad Dal, Red Gram Dal, Mustard Seeds, Curry Leaves, Tamarind, Drumstick, Tomato",Mustard
+2,Crispy Masala Dosa,South Indian,Karnataka,Breakfast,Vegetarian,220.0,380.0,8.2,58.4,12.5,5.1,2.8,480.0,"Rice, Urad Dal, Potato, Onion, Ghee, Mustard Seeds, Green Chili, Turmeric","Dairy, Mustard"
+3,South Indian Vegetable Sambar Rice,South Indian,South Indian,Lunch,Vegan,350.0,450.0,14.0,78.0,8.5,10.2,4.5,550.0,"Rice, Toor Dal, Carrot, Beans, Pumpkin, Tamarind, Sambar Powder, Mustard",Mustard
+4,Vegetable Uttapam,South Indian,Tamil Nadu,Breakfast,Vegan,200.0,310.0,8.5,54.0,6.8,6.2,3.5,410.0,"Rice, Urad Dal, Onion, Tomato, Green Capsicum, Coriander",
+5,Ven Pongal with Coconut Chutney,South Indian,Tamil Nadu,Breakfast,Vegetarian,250.0,410.0,11.0,58.0,15.0,4.8,1.2,430.0,"Raw Rice, Moong Dal, Ghee, Black Pepper, Cumin, Cashew Nuts, Grated Coconut","Dairy, Tree Nuts"
+6,Traditional Medu Vada,South Indian,South Indian,Snack,Vegan,150.0,340.0,9.8,38.0,16.5,5.5,1.0,390.0,"Urad Dal, Green Chili, Ginger, Cumin Seeds, Curry Leaves, Vegetable Oil",
+7,Curd Rice (Thayir Sadam),South Indian,Tamil Nadu,Lunch,Vegetarian,250.0,290.0,7.5,44.0,9.2,2.1,4.0,380.0,"Steamed Rice, Fresh Curd, Cow Milk, Mustard Seeds, Ginger, Curry Leaves, Ghee","Dairy, Mustard"
+8,Chettinad Chicken Curry,South Indian,Tamil Nadu,Dinner,Non-Vegetarian,300.0,480.0,34.5,14.0,32.0,3.8,2.5,620.0,"Chicken, Onion, Tomato, Chettinad Spices, Coconut, Ginger, Garlic, Poppy Seeds",
+9,Kerala Style Fish Curry (Meen Curry),South Indian,Kerala,Dinner,Non-Vegetarian,280.0,360.0,28.0,10.2,22.5,2.6,2.1,590.0,"Mackerel Fish, Kudampuli (Garcinia), Coconut Milk, Shallots, Mustard, Fenugreek","Fish, Mustard"
+10,Mixed Vegetable Avial,South Indian,Kerala,Lunch,Vegetarian,250.0,240.0,5.8,22.0,14.2,7.5,5.2,360.0,"Raw Plantain, Yam, Drumstick, Carrot, Curd, Grated Coconut, Cumin, Coconut Oil",Dairy
+11,North Indian Rajma Chawal,North Indian,Punjabi,Lunch,Vegan,400.0,510.0,18.5,84.0,10.2,14.6,4.2,580.0,"Kidney Beans (Rajma), Steamed Basmati Rice, Onion, Tomato, Ginger, Garlic, Cumin, Garam Masala",
+12,Punjabi Chana Masala with Bhatura,North Indian,Punjabi,Lunch,Vegetarian,380.0,620.0,19.0,88.0,22.0,13.5,5.0,710.0,"Chickpeas (Kabuli Chana), Maida (Refined Wheat), Curd, Onion, Tomato, Chana Masala Spices","Gluten, Dairy"
+13,Palak Paneer with Tandoori Roti,North Indian,North Indian,Dinner,Vegetarian,350.0,460.0,24.0,42.0,22.0,8.4,4.8,540.0,"Fresh Spinach, Paneer, Whole Wheat Flour, Garlic, Onion, Tomato, Cream, Butter","Dairy, Gluten"
+14,Paneer Butter Masala,North Indian,Punjabi,Dinner,Vegetarian,300.0,520.0,18.2,26.0,38.5,4.2,8.5,580.0,"Paneer, Tomato Purée, Butter, Fresh Cream, Cashews, Garam Masala, Kasuri Methi","Dairy, Tree Nuts"
+15,Dal Makhani,North Indian,Punjabi,Dinner,Vegetarian,250.0,410.0,16.0,41.0,20.5,9.8,3.2,520.0,"Whole Black Gram (Urad), Kidney Beans, Butter, Cream, Tomato Purée, Garlic, Ginger",Dairy
+16,Chicken Tikka Masala,North Indian,Punjabi,Dinner,Non-Vegetarian,320.0,540.0,38.0,18.0,34.0,3.5,6.2,650.0,"Chicken Breast, Yogurt, Cream, Tomato, Butter, Spices, Garlic, Ginger",Dairy
+17,Smoky Baingan Bharta,North Indian,North Indian,Dinner,Vegan,220.0,180.0,4.5,20.0,9.5,6.8,5.4,340.0,"Roasted Eggplant (Baingan), Onion, Tomato, Green Chili, Mustard Oil, Coriander",Mustard
+18,Homestyle Aloo Gobi,North Indian,North Indian,Lunch,Vegan,250.0,220.0,5.2,32.0,8.4,6.1,4.2,390.0,"Cauliflower, Potato, Tomato, Ginger, Cumin, Turmeric, Coriander Powder",
+19,North Indian Moong Dal Khichdi,North Indian,North Indian,Dinner,Vegetarian,300.0,360.0,14.5,59.0,7.5,8.2,2.1,420.0,"Yellow Moong Dal, Rice, Ghee, Cumin, Asafoetida (Hing), Turmeric",Dairy
+20,Kadai Chicken Curry,North Indian,Punjabi,Dinner,Non-Vegetarian,300.0,490.0,36.0,12.5,33.0,3.2,3.8,610.0,"Chicken, Green Capsicum, Onion, Tomato, Kadai Masala Spices, Coriander",
+21,Gujarati Khaman Dhokla,West Indian,Gujarati,Snack,Vegan,150.0,230.0,9.2,36.0,5.2,4.8,6.5,480.0,"Bengal Gram Flour (Besan), Lemon Juice, Mustard Seeds, Green Chili, Curry Leaves, Sesame","Mustard, Sesame"
+22,Indori Kanda Poha,West Indian,Maharashtrian/MP,Breakfast,Vegan,200.0,280.0,6.5,48.0,7.5,4.2,3.8,370.0,"Flattened Rice (Poha), Onion, Roasted Peanuts, Mustard Seeds, Turmeric, Lemon, Sev","Peanuts, Mustard"
+23,Mumbai Style Pav Bhaji,West Indian,Maharashtrian,Dinner,Vegetarian,350.0,560.0,14.2,72.0,24.0,10.5,7.8,780.0,"Mashed Potatoes, Cauliflower, Green Peas, Tomato, Butter, Pav Bread, Pav Bhaji Masala","Dairy, Gluten"
+24,Gujarati Methi Thepla,West Indian,Gujarati,Breakfast,Vegetarian,180.0,310.0,8.8,44.0,11.2,6.5,2.5,410.0,"Whole Wheat Flour, Fenugreek Leaves (Methi), Sesame Seeds, Curd, Spices, Ghee","Gluten, Dairy, Sesame"
+25,Maharashtrian Misal Pav,West Indian,Maharashtrian,Breakfast,Vegan,320.0,490.0,17.5,68.0,16.8,12.4,4.5,720.0,"Sprouted Matki (Moth Beans), Farsan, Onion, Tomato, Pav Bread, Chili Spices, Mustard","Gluten, Mustard"
+26,Goan Fish Curry with Rice,West Indian,Goan,Lunch,Non-Vegetarian,350.0,520.0,32.0,54.0,20.0,3.5,2.2,640.0,"Kingfish / Mackerel, Basmati Rice, Coconut, Tamarind, Kashmiri Chili, Garlic",Fish
+27,Sabudana Khichdi,West Indian,Maharashtrian,Breakfast,Vegetarian,200.0,350.0,5.2,56.0,12.0,3.0,2.0,340.0,"Tapioca Pearls (Sabudana), Coarsely Ground Peanuts, Potato, Green Chili, Ghee, Cumin","Peanuts, Dairy"
+28,Gujarati Sweet & Sour Kadhi,West Indian,Gujarati,Lunch,Vegetarian,200.0,170.0,4.8,16.0,9.5,1.2,6.0,380.0,"Curd, Besan (Gram Flour), Jaggery, Mustard Seeds, Curry Leaves, Ghee, Cloves","Dairy, Mustard"
+29,Bengali Machher Jhol,East Indian,Bengali,Lunch,Non-Vegetarian,320.0,390.0,30.0,28.0,18.0,3.2,2.5,520.0,"Rohu Fish, Potato, Mustard Oil, Kalonji (Nigella), Turmeric, Green Chili, Steamed Rice","Fish, Mustard"
+30,Odia Dalma,East Indian,Odia,Lunch,Vegan,280.0,290.0,12.8,46.0,6.2,9.5,3.8,410.0,"Toor Dal, Raw Papaya, Pumpkin, Potato, Eggplant, Panch Phoron, Roasted Cumin Powder",
+31,Kolkata Style Chicken Kosha,East Indian,Bengali,Dinner,Non-Vegetarian,300.0,510.0,35.0,15.0,34.0,2.8,3.5,630.0,"Chicken, Mustard Oil, Onion Purée, Ginger Garlic, Potato, Kashmiri Red Chili",Mustard
+32,Bengali Luchi with Cholar Dal,East Indian,Bengali,Breakfast,Vegetarian,300.0,480.0,13.5,64.0,19.5,7.2,5.5,460.0,"Maida (Deep fried flatbread), Chana Dal, Coconut Bites, Ghee, Cumin, Raisins","Gluten, Dairy"
+33,Aloo Posto (Potatoes in Poppy Seed Paste),East Indian,Bengali,Lunch,Vegan,200.0,260.0,4.2,32.0,13.0,4.5,1.8,310.0,"Potato, White Poppy Seeds, Mustard Oil, Green Chili, Turmeric",Mustard
+34,Sprouted Moong Salad,All India,Indian Standard,Snack,Vegan,150.0,140.0,9.5,22.0,1.8,6.5,3.2,210.0,"Sprouted Green Gram, Cucumber, Tomato, Lemon Juice, Black Salt, Chaat Masala",
+35,Roasted Salted Chana,All India,Indian Standard,Snack,Vegan,100.0,210.0,11.2,32.0,3.8,8.5,1.5,290.0,"Roasted Bengal Gram, Rock Salt, Turmeric",
+36,High-Protein Oats Upma,All India,Modern Indian,Breakfast,Vegan,200.0,260.0,9.0,42.0,6.0,7.2,2.1,350.0,"Rolled Oats, Carrot, Green Peas, Mustard Seeds, Curry Leaves, Green Chili, Oil",Mustard
+37,Tandoori Paneer Tikka,North Indian,Punjabi,Snack,Vegetarian,180.0,290.0,16.5,8.5,21.0,2.2,3.0,440.0,"Paneer Cubes, Yogurt, Capsicum, Onion, Tandoori Masala, Lemon",Dairy
+38,Indian Masala Egg Bhurji with Roti,All India,North/West Indian,Breakfast,Non-Vegetarian,250.0,380.0,21.0,32.0,18.5,4.5,2.2,490.0,"Whole Hen Eggs, Onion, Tomato, Whole Wheat Roti, Green Chili, Butter, Coriander","Eggs, Gluten, Dairy"
+39,Roasted Makhana (Foxnuts) Snack,North Indian,North Indian,Snack,Vegetarian,50.0,180.0,4.8,28.0,5.5,3.8,0.5,190.0,"Phool Makhana, Ghee, Black Pepper, Rock Salt",Dairy
+40,Badam Milk (Almond Shake),All India,Indian Standard,Snack,Vegetarian,250.0,230.0,7.5,24.0,11.5,2.5,18.0,110.0,"Cow Milk, Blanched Almonds, Cardamom, Saffron, Sugar","Dairy, Tree Nuts"

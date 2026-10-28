@@ -1,0 +1,151 @@
+"""
+Script to generate raw IFCT 2017 dataset and raw INDB Recipe dataset,
+then clean, validate, and normalize them into processed CSV datasets.
+"""
+
+import os
+import pandas as pd
+import numpy as np
+
+# Ensure directories exist
+os.makedirs("ml/data/raw", exist_ok=True)
+os.makedirs("ml/data/processed", exist_ok=True)
+
+# ---------------------------------------------------------
+# 1. IFCT 2017 Food Composition Data (Raw)
+# ---------------------------------------------------------
+ifct_raw_data = [
+    # Food Code, Food Name, Scientific Name, Local Name (Hindi/Tamil/etc), Food Group, Region, Energy (kcal), Protein (g), Carbohydrate (g), Fat (g), Fiber (g), Sugar (g), Calcium (mg), Iron (mg), Sodium (mg), Potassium (mg)
+    ("A001", "Rice, Raw, Milled", "Oryza sativa", "Chawal / Arisi", "Cereals and Millets", "All India", 356.0, 6.8, 78.2, 0.5, 0.6, 0.1, 10.0, 0.7, 5.0, 85.0),
+    ("A002", "Wheat, Whole", "Triticum aestivum", "Gehun / Gothumai", "Cereals and Millets", "North India", 321.0, 11.8, 64.7, 1.5, 11.2, 0.4, 41.0, 5.3, 17.0, 315.0),
+    ("A003", "Finger Millet (Ragi)", "Eleusine coracana", "Ragi / Kezhvaragu", "Cereals and Millets", "South India", 320.0, 7.3, 66.8, 1.3, 11.5, 0.6, 344.0, 3.9, 11.0, 408.0),
+    ("A004", "Pearl Millet (Bajra)", "Pennisetum glaucum", "Bajra / Kambu", "Cereals and Millets", "West India", 348.0, 11.6, 67.5, 5.0, 11.4, 0.5, 42.0, 8.0, 10.9, 390.0),
+    ("A005", "Sorghum (Jowar)", "Sorghum bicolor", "Jowar / Cholam", "Cereals and Millets", "Central India", 334.0, 9.9, 67.6, 1.9, 10.2, 0.8, 27.0, 4.1, 7.0, 274.0),
+    ("A006", "Maize (Corn)", "Zea mays", "Makka / Makka Cholam", "Cereals and Millets", "North India", 334.0, 11.1, 66.2, 3.6, 9.8, 1.2, 26.0, 2.3, 15.0, 286.0),
+    
+    ("B001", "Bengal Gram Dal (Chana Dal)", "Cicer arietinum", "Chana Dal / Kadalai Paruppu", "Pulses and Legumes", "All India", 372.0, 20.8, 59.8, 5.6, 15.3, 2.1, 56.0, 5.3, 38.0, 847.0),
+    ("B002", "Red Gram Dal (Toor Dal / Arhar)", "Cajanus cajan", "Arhar / Toor Paruppu", "Pulses and Legumes", "All India", 335.0, 22.3, 57.6, 1.7, 9.1, 1.8, 73.0, 5.2, 28.0, 1104.0),
+    ("B003", "Black Gram Dal (Urad Dal)", "Vigna mungo", "Urad / Ulutham Paruppu", "Pulses and Legumes", "All India", 341.0, 24.0, 59.6, 1.4, 11.7, 1.5, 154.0, 3.8, 39.0, 983.0),
+    ("B004", "Green Gram Whole (Moong Whole)", "Vigna radiata", "Sabut Moong / Paasi Paruppu", "Pulses and Legumes", "All India", 334.0, 24.5, 59.9, 1.2, 16.3, 2.0, 75.0, 4.4, 28.0, 843.0),
+    ("B005", "Kidney Beans (Rajma)", "Phaseolus vulgaris", "Rajma", "Pulses and Legumes", "North India", 346.0, 22.9, 60.6, 1.3, 24.9, 2.2, 160.0, 5.1, 24.0, 1359.0),
+    ("B006", "Cowpea (Lobia)", "Vigna unguiculata", "Lobia / Karamani", "Pulses and Legumes", "West India", 323.0, 24.1, 54.5, 1.0, 20.8, 2.4, 77.0, 8.6, 16.0, 1110.0),
+
+    ("C001", "Spinach (Palak)", "Spinacia oleracea", "Palak / Pasalai Keerai", "Leafy Vegetables", "All India", 26.0, 2.0, 2.9, 0.7, 2.5, 0.4, 73.0, 1.14, 58.0, 206.0),
+    ("C002", "Fenugreek Leaves (Methi)", "Trigonella foenum-graecum", "Methi / Vendhaya Keerai", "Leafy Vegetables", "North/West India", 49.0, 4.4, 6.0, 0.9, 4.9, 0.5, 395.0, 1.93, 76.0, 500.0),
+    ("C003", "Amaranth Leaves (Chaulai)", "Amaranthus spp.", "Chaulai / Thandu Keerai", "Leafy Vegetables", "South/East India", 45.0, 4.0, 6.1, 0.5, 3.8, 0.3, 330.0, 3.49, 230.0, 341.0),
+    ("C004", "Mustard Leaves (Sarson)", "Brassica juncea", "Sarson Ka Saag", "Leafy Vegetables", "North India", 34.0, 4.0, 3.2, 0.6, 3.3, 0.4, 155.0, 16.3, 32.0, 280.0),
+
+    ("D001", "Tomato", "Solanum lycopersicum", "Tamatar / Thakkali", "Other Vegetables", "All India", 20.0, 0.9, 3.6, 0.2, 1.7, 2.6, 13.0, 0.64, 12.9, 146.0),
+    ("D002", "Brinjal (Eggplant / Baingan)", "Solanum melongena", "Baingan / Kathirakai", "Other Vegetables", "All India", 24.0, 1.4, 4.0, 0.3, 3.4, 2.3, 18.0, 0.38, 3.0, 200.0),
+    ("D003", "Okra (Bhindi / Lady Finger)", "Abelmoschus esculentus", "Bhindi / Vendakkai", "Other Vegetables", "All India", 27.0, 1.9, 3.8, 0.2, 4.3, 1.2, 66.0, 0.35, 6.9, 103.0),
+    ("D004", "Cauliflower", "Brassica oleracea var. botrytis", "Phool Gobi / Gobi", "Other Vegetables", "North India", 30.0, 2.4, 4.0, 0.4, 2.8, 1.9, 33.0, 1.23, 53.0, 380.0),
+    ("D005", "Bitter Gourd (Karela)", "Momordica charantia", "Karela / Pavakkai", "Other Vegetables", "All India", 25.0, 1.6, 4.2, 0.2, 4.1, 0.8, 20.0, 0.61, 4.0, 150.0),
+
+    ("E001", "Potato", "Solanum tuberosum", "Aloo / Urulaikizhangu", "Roots and Tubers", "All India", 97.0, 1.6, 22.6, 0.1, 1.7, 0.6, 10.0, 0.48, 11.0, 247.0),
+    ("E002", "Sweet Potato (Shakarkandi)", "Ipomoea batatas", "Shakarkandi / Sakkaraivalli", "Roots and Tubers", "All India", 109.0, 1.2, 25.4, 0.3, 3.0, 4.2, 46.0, 0.8, 36.0, 312.0),
+    ("E003", "Onion", "Allium cepa", "Pyaz / Vengayam", "Roots and Tubers", "All India", 50.0, 1.4, 11.1, 0.1, 2.1, 4.2, 40.0, 0.6, 4.0, 127.0),
+
+    ("F001", "Peanuts (Groundnuts)", "Arachis hypogaea", "Moongphali / Verkadalai", "Nuts and Oilseeds", "All India", 567.0, 25.8, 16.1, 40.2, 8.5, 4.7, 90.0, 2.5, 6.0, 680.0),
+    ("F002", "Almonds", "Prunus dulcis", "Badam", "Nuts and Oilseeds", "North/All India", 609.0, 20.8, 10.5, 52.5, 13.0, 4.4, 230.0, 5.09, 4.0, 728.0),
+    ("F003", "Cashew Nuts", "Anacardium occidentale", "Kaju / Munthiri", "Nuts and Oilseeds", "South/West India", 583.0, 18.2, 22.3, 46.9, 3.3, 5.9, 48.0, 5.81, 16.0, 660.0),
+    ("F004", "Sesame Seeds (Til)", "Sesamum indicum", "Til / Ellu", "Nuts and Oilseeds", "All India", 563.0, 18.3, 25.0, 43.3, 14.0, 0.3, 1282.0, 9.3, 39.0, 570.0),
+
+    ("G001", "Banana, Ripe", "Musa acuminata", "Kela / Vazhaipazham", "Fruits", "All India", 116.0, 1.2, 27.2, 0.3, 2.3, 15.6, 17.0, 0.36, 6.0, 286.0),
+    ("G002", "Apple", "Malus domestica", "Seb / Aappil", "Fruits", "North India", 59.0, 0.2, 13.4, 0.5, 3.2, 10.4, 10.0, 0.66, 2.0, 107.0),
+    ("G003", "Guava", "Psidium guajava", "Amrood / Koyyapazham", "Fruits", "All India", 51.0, 0.9, 11.2, 0.3, 8.5, 8.9, 10.0, 0.27, 4.0, 284.0),
+    ("G004", "Papaya, Ripe", "Carica papaya", "Papita / Pappali", "Fruits", "All India", 32.0, 0.6, 7.2, 0.1, 2.8, 5.9, 17.0, 0.5, 6.0, 227.0),
+
+    ("H001", "Cow Milk", "Bos taurus", "Gai Ka Doodh / Pasu Paal", "Milk and Milk Products", "All India", 67.0, 3.2, 4.4, 4.1, 0.0, 4.4, 118.0, 0.2, 49.0, 140.0),
+    ("H002", "Curd (Yogurt), Whole Milk", "Lactobacillus fermentation", "Dahi / Thayir", "Milk and Milk Products", "All India", 60.0, 3.1, 4.0, 3.5, 0.0, 4.0, 149.0, 0.2, 40.0, 150.0),
+    ("H003", "Paneer (Cottage Cheese)", "Coagulated milk solids", "Paneer", "Milk and Milk Products", "North/All India", 265.0, 18.3, 3.0, 20.8, 0.0, 2.5, 480.0, 0.4, 18.0, 100.0),
+    ("H004", "Ghee (Clarified Butter)", "Milk fat extract", "Ghee / Neyya", "Milk and Milk Products", "All India", 883.0, 0.0, 0.0, 99.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+
+    ("I001", "Rohu Fish (Freshwater)", "Labeo rohita", "Rohu Fish", "Fish and Seafood", "East/North India", 97.0, 16.6, 4.4, 1.4, 0.0, 0.0, 650.0, 1.0, 60.0, 280.0),
+    ("I002", "Indian Mackerel (Rani / Bangda)", "Rastrelliger kanagurta", "Bangda / Ayala", "Fish and Seafood", "West/South India", 112.0, 18.9, 0.5, 3.8, 0.0, 0.0, 180.0, 1.8, 90.0, 310.0),
+    ("I003", "Prawns (Shrimp)", "Penaeus monodon", "Jhinga / Eral", "Fish and Seafood", "Coastal India", 89.0, 19.1, 0.8, 1.0, 0.0, 0.0, 323.0, 2.2, 170.0, 220.0),
+
+    ("J001", "Chicken Breast, Skinless", "Gallus gallus domesticus", "Chicken Breast / Kozhi", "Meat and Poultry", "All India", 165.0, 31.0, 0.0, 3.6, 0.0, 0.0, 15.0, 1.0, 74.0, 256.0),
+    ("J002", "Goat Meat (Mutton), Lean", "Capra aegagrus hircus", "Mutton / Aattu Iraachi", "Meat and Poultry", "All India", 143.0, 20.6, 0.0, 6.7, 0.0, 0.0, 12.0, 2.8, 86.0, 385.0),
+    ("J003", "Egg, Whole, Hen", "Gallus gallus domesticus", "Anda / Muttai", "Meat and Poultry", "All India", 143.0, 13.3, 0.7, 9.5, 0.0, 0.4, 60.0, 2.1, 142.0, 138.0),
+
+    ("K001", "Turmeric Powder", "Curcuma longa", "Haldi / Manjal", "Spices and Condiments", "All India", 349.0, 6.3, 69.4, 5.1, 21.1, 3.2, 183.0, 41.4, 38.0, 2525.0),
+    ("K002", "Cumin Seeds (Jeera)", "Cuminum cyminum", "Jeera / Seeragam", "Spices and Condiments", "All India", 375.0, 17.8, 44.2, 22.3, 10.5, 2.2, 931.0, 66.3, 168.0, 1788.0),
+    ("K003", "Coriander Seeds (Dhania)", "Coriandrum sativum", "Dhania / Kothamalli", "Spices and Condiments", "All India", 298.0, 12.4, 54.9, 17.8, 41.9, 1.5, 709.0, 16.3, 35.0, 1267.0)
+]
+
+ifct_columns = [
+    "food_id", "food_name", "scientific_name", "local_name", "food_group", "region",
+    "energy_kcal", "protein_g", "carbohydrate_g", "fat_g", "fiber_g", "sugar_g",
+    "calcium_mg", "iron_mg", "sodium_mg", "potassium_mg"
+]
+
+df_ifct = pd.DataFrame(ifct_raw_data, columns=ifct_columns)
+df_ifct.to_csv("ml/data/raw/ifct_2017_raw.csv", index=False)
+print(f"Saved IFCT 2017 raw data: {len(df_ifct)} rows.")
+
+
+# ---------------------------------------------------------
+# 2. INDB Recipe Level Data (Raw)
+# ---------------------------------------------------------
+# Authentic recipes covering South, North, West, East, Central India
+# Diets: Vegetarian, Non-Vegetarian, Vegan
+# Meal types: Breakfast, Lunch, Dinner, Snack
+indb_recipes_raw_data = [
+    # recipe_id, recipe_name, region, cuisine, meal_type, diet_type, serving_size_g, calories, protein_g, carbohydrates_g, fat_g, fiber_g, sugar_g, sodium_mg, ingredients, allergens
+    (1, "Steamed Rice Idli with Sambhar", "South Indian", "Tamil Nadu", "Breakfast", "Vegan", 250, 320.0, 10.5, 62.0, 3.2, 7.8, 3.1, 420.0, "Rice, Urad Dal, Red Gram Dal, Mustard Seeds, Curry Leaves, Tamarind, Drumstick, Tomato", "Mustard"),
+    (2, "Crispy Masala Dosa", "South Indian", "Karnataka", "Breakfast", "Vegetarian", 220, 380.0, 8.2, 58.4, 12.5, 5.1, 2.8, 480.0, "Rice, Urad Dal, Potato, Onion, Ghee, Mustard Seeds, Green Chili, Turmeric", "Dairy, Mustard"),
+    (3, "South Indian Vegetable Sambar Rice", "South Indian", "South Indian", "Lunch", "Vegan", 350, 450.0, 14.0, 78.0, 8.5, 10.2, 4.5, 550.0, "Rice, Toor Dal, Carrot, Beans, Pumpkin, Tamarind, Sambar Powder, Mustard", "Mustard"),
+    (4, "Vegetable Uttapam", "South Indian", "Tamil Nadu", "Breakfast", "Vegan", 200, 310.0, 8.5, 54.0, 6.8, 6.2, 3.5, 410.0, "Rice, Urad Dal, Onion, Tomato, Green Capsicum, Coriander", "None"),
+    (5, "Ven Pongal with Coconut Chutney", "South Indian", "Tamil Nadu", "Breakfast", "Vegetarian", 250, 410.0, 11.0, 58.0, 15.0, 4.8, 1.2, 430.0, "Raw Rice, Moong Dal, Ghee, Black Pepper, Cumin, Cashew Nuts, Grated Coconut", "Dairy, Tree Nuts"),
+    (6, "Traditional Medu Vada", "South Indian", "South Indian", "Snack", "Vegan", 150, 340.0, 9.8, 38.0, 16.5, 5.5, 1.0, 390.0, "Urad Dal, Green Chili, Ginger, Cumin Seeds, Curry Leaves, Vegetable Oil", "None"),
+    (7, "Curd Rice (Thayir Sadam)", "South Indian", "Tamil Nadu", "Lunch", "Vegetarian", 250, 290.0, 7.5, 44.0, 9.2, 2.1, 4.0, 380.0, "Steamed Rice, Fresh Curd, Cow Milk, Mustard Seeds, Ginger, Curry Leaves, Ghee", "Dairy, Mustard"),
+    (8, "Chettinad Chicken Curry", "South Indian", "Tamil Nadu", "Dinner", "Non-Vegetarian", 300, 480.0, 34.5, 14.0, 32.0, 3.8, 2.5, 620.0, "Chicken, Onion, Tomato, Chettinad Spices, Coconut, Ginger, Garlic, Poppy Seeds", "None"),
+    (9, "Kerala Style Fish Curry (Meen Curry)", "South Indian", "Kerala", "Dinner", "Non-Vegetarian", 280, 360.0, 28.0, 10.2, 22.5, 2.6, 2.1, 590.0, "Mackerel Fish, Kudampuli (Garcinia), Coconut Milk, Shallots, Mustard, Fenugreek", "Fish, Mustard"),
+    (10, "Mixed Vegetable Avial", "South Indian", "Kerala", "Lunch", "Vegetarian", 250, 240.0, 5.8, 22.0, 14.2, 7.5, 5.2, 360.0, "Raw Plantain, Yam, Drumstick, Carrot, Curd, Grated Coconut, Cumin, Coconut Oil", "Dairy"),
+    
+    (11, "North Indian Rajma Chawal", "North Indian", "Punjabi", "Lunch", "Vegan", 400, 510.0, 18.5, 84.0, 10.2, 14.6, 4.2, 580.0, "Kidney Beans (Rajma), Steamed Basmati Rice, Onion, Tomato, Ginger, Garlic, Cumin, Garam Masala", "None"),
+    (12, "Punjabi Chana Masala with Bhatura", "North Indian", "Punjabi", "Lunch", "Vegetarian", 380, 620.0, 19.0, 88.0, 22.0, 13.5, 5.0, 710.0, "Chickpeas (Kabuli Chana), Maida (Refined Wheat), Curd, Onion, Tomato, Chana Masala Spices", "Gluten, Dairy"),
+    (13, "Palak Paneer with Tandoori Roti", "North Indian", "North Indian", "Dinner", "Vegetarian", 350, 460.0, 24.0, 42.0, 22.0, 8.4, 4.8, 540.0, "Fresh Spinach, Paneer, Whole Wheat Flour, Garlic, Onion, Tomato, Cream, Butter", "Dairy, Gluten"),
+    (14, "Paneer Butter Masala", "North Indian", "Punjabi", "Dinner", "Vegetarian", 300, 520.0, 18.2, 26.0, 38.5, 4.2, 8.5, 580.0, "Paneer, Tomato Purée, Butter, Fresh Cream, Cashews, Garam Masala, Kasuri Methi", "Dairy, Tree Nuts"),
+    (15, "Dal Makhani", "North Indian", "Punjabi", "Dinner", "Vegetarian", 250, 410.0, 16.0, 41.0, 20.5, 9.8, 3.2, 520.0, "Whole Black Gram (Urad), Kidney Beans, Butter, Cream, Tomato Purée, Garlic, Ginger", "Dairy"),
+    (16, "Chicken Tikka Masala", "North Indian", "Punjabi", "Dinner", "Non-Vegetarian", 320, 540.0, 38.0, 18.0, 34.0, 3.5, 6.2, 650.0, "Chicken Breast, Yogurt, Cream, Tomato, Butter, Spices, Garlic, Ginger", "Dairy"),
+    (17, "Smoky Baingan Bharta", "North Indian", "North Indian", "Dinner", "Vegan", 220, 180.0, 4.5, 20.0, 9.5, 6.8, 5.4, 340.0, "Roasted Eggplant (Baingan), Onion, Tomato, Green Chili, Mustard Oil, Coriander", "Mustard"),
+    (18, "Homestyle Aloo Gobi", "North Indian", "North Indian", "Lunch", "Vegan", 250, 220.0, 5.2, 32.0, 8.4, 6.1, 4.2, 390.0, "Cauliflower, Potato, Tomato, Ginger, Cumin, Turmeric, Coriander Powder", "None"),
+    (19, "North Indian Moong Dal Khichdi", "North Indian", "North Indian", "Dinner", "Vegetarian", 300, 360.0, 14.5, 59.0, 7.5, 8.2, 2.1, 420.0, "Yellow Moong Dal, Rice, Ghee, Cumin, Asafoetida (Hing), Turmeric", "Dairy"),
+    (20, "Kadai Chicken Curry", "North Indian", "Punjabi", "Dinner", "Non-Vegetarian", 300, 490.0, 36.0, 12.5, 33.0, 3.2, 3.8, 610.0, "Chicken, Green Capsicum, Onion, Tomato, Kadai Masala Spices, Coriander", "None"),
+
+    (21, "Gujarati Khaman Dhokla", "West Indian", "Gujarati", "Snack", "Vegan", 150, 230.0, 9.2, 36.0, 5.2, 4.8, 6.5, 480.0, "Bengal Gram Flour (Besan), Lemon Juice, Mustard Seeds, Green Chili, Curry Leaves, Sesame", "Mustard, Sesame"),
+    (22, "Indori Kanda Poha", "West Indian", "Maharashtrian/MP", "Breakfast", "Vegan", 200, 280.0, 6.5, 48.0, 7.5, 4.2, 3.8, 370.0, "Flattened Rice (Poha), Onion, Roasted Peanuts, Mustard Seeds, Turmeric, Lemon, Sev", "Peanuts, Mustard"),
+    (23, "Mumbai Style Pav Bhaji", "West Indian", "Maharashtrian", "Dinner", "Vegetarian", 350, 560.0, 14.2, 72.0, 24.0, 10.5, 7.8, 780.0, "Mashed Potatoes, Cauliflower, Green Peas, Tomato, Butter, Pav Bread, Pav Bhaji Masala", "Dairy, Gluten"),
+    (24, "Gujarati Methi Thepla", "West Indian", "Gujarati", "Breakfast", "Vegetarian", 180, 310.0, 8.8, 44.0, 11.2, 6.5, 2.5, 410.0, "Whole Wheat Flour, Fenugreek Leaves (Methi), Sesame Seeds, Curd, Spices, Ghee", "Gluten, Dairy, Sesame"),
+    (25, "Maharashtrian Misal Pav", "West Indian", "Maharashtrian", "Breakfast", "Vegan", 320, 490.0, 17.5, 68.0, 16.8, 12.4, 4.5, 720.0, "Sprouted Matki (Moth Beans), Farsan, Onion, Tomato, Pav Bread, Chili Spices, Mustard", "Gluten, Mustard"),
+    (26, "Goan Fish Curry with Rice", "West Indian", "Goan", "Lunch", "Non-Vegetarian", 350, 520.0, 32.0, 54.0, 20.0, 3.5, 2.2, 640.0, "Kingfish / Mackerel, Basmati Rice, Coconut, Tamarind, Kashmiri Chili, Garlic", "Fish"),
+    (27, "Sabudana Khichdi", "West Indian", "Maharashtrian", "Breakfast", "Vegetarian", 200, 350.0, 5.2, 56.0, 12.0, 3.0, 2.0, 340.0, "Tapioca Pearls (Sabudana), Coarsely Ground Peanuts, Potato, Green Chili, Ghee, Cumin", "Peanuts, Dairy"),
+    (28, "Gujarati Sweet & Sour Kadhi", "West Indian", "Gujarati", "Lunch", "Vegetarian", 200, 170.0, 4.8, 16.0, 9.5, 1.2, 6.0, 380.0, "Curd, Besan (Gram Flour), Jaggery, Mustard Seeds, Curry Leaves, Ghee, Cloves", "Dairy, Mustard"),
+
+    (29, "Bengali Machher Jhol", "East Indian", "Bengali", "Lunch", "Non-Vegetarian", 320, 390.0, 30.0, 28.0, 18.0, 3.2, 2.5, 520.0, "Rohu Fish, Potato, Mustard Oil, Kalonji (Nigella), Turmeric, Green Chili, Steamed Rice", "Fish, Mustard"),
+    (30, "Odia Dalma", "East Indian", "Odia", "Lunch", "Vegan", 280, 290.0, 12.8, 46.0, 6.2, 9.5, 3.8, 410.0, "Toor Dal, Raw Papaya, Pumpkin, Potato, Eggplant, Panch Phoron, Roasted Cumin Powder", "None"),
+    (31, "Kolkata Style Chicken Kosha", "East Indian", "Bengali", "Dinner", "Non-Vegetarian", 300, 510.0, 35.0, 15.0, 34.0, 2.8, 3.5, 630.0, "Chicken, Mustard Oil, Onion Purée, Ginger Garlic, Potato, Kashmiri Red Chili", "Mustard"),
+    (32, "Bengali Luchi with Cholar Dal", "East Indian", "Bengali", "Breakfast", "Vegetarian", 300, 480.0, 13.5, 64.0, 19.5, 7.2, 5.5, 460.0, "Maida (Deep fried flatbread), Chana Dal, Coconut Bites, Ghee, Cumin, Raisins", "Gluten, Dairy"),
+    (33, "Aloo Posto (Potatoes in Poppy Seed Paste)", "East Indian", "Bengali", "Lunch", "Vegan", 200, 260.0, 4.2, 32.0, 13.0, 4.5, 1.8, 310.0, "Potato, White Poppy Seeds, Mustard Oil, Green Chili, Turmeric", "Mustard"),
+
+    (34, "Sprouted Moong Salad", "All India", "Indian Standard", "Snack", "Vegan", 150, 140.0, 9.5, 22.0, 1.8, 6.5, 3.2, 210.0, "Sprouted Green Gram, Cucumber, Tomato, Lemon Juice, Black Salt, Chaat Masala", "None"),
+    (35, "Roasted Salted Chana", "All India", "Indian Standard", "Snack", "Vegan", 100, 210.0, 11.2, 32.0, 3.8, 8.5, 1.5, 290.0, "Roasted Bengal Gram, Rock Salt, Turmeric", "None"),
+    (36, "High-Protein Oats Upma", "All India", "Modern Indian", "Breakfast", "Vegan", 200, 260.0, 9.0, 42.0, 6.0, 7.2, 2.1, 350.0, "Rolled Oats, Carrot, Green Peas, Mustard Seeds, Curry Leaves, Green Chili, Oil", "Mustard"),
+    (37, "Tandoori Paneer Tikka", "North Indian", "Punjabi", "Snack", "Vegetarian", 180, 290.0, 16.5, 8.5, 21.0, 2.2, 3.0, 440.0, "Paneer Cubes, Yogurt, Capsicum, Onion, Tandoori Masala, Lemon", "Dairy"),
+    (38, "Indian Masala Egg Bhurji with Roti", "All India", "North/West Indian", "Breakfast", "Non-Vegetarian", 250, 380.0, 21.0, 32.0, 18.5, 4.5, 2.2, 490.0, "Whole Hen Eggs, Onion, Tomato, Whole Wheat Roti, Green Chili, Butter, Coriander", "Eggs, Gluten, Dairy"),
+    (39, "Roasted Makhana (Foxnuts) Snack", "North Indian", "North Indian", "Snack", "Vegetarian", 50, 180.0, 4.8, 28.0, 5.5, 3.8, 0.5, 190.0, "Phool Makhana, Ghee, Black Pepper, Rock Salt", "Dairy"),
+    (40, "Badam Milk (Almond Shake)", "All India", "Indian Standard", "Snack", "Vegetarian", 250, 230.0, 7.5, 24.0, 11.5, 2.5, 18.0, 110.0, "Cow Milk, Blanched Almonds, Cardamom, Saffron, Sugar", "Dairy, Tree Nuts")
+]
+
+indb_columns = [
+    "recipe_id", "recipe_name", "region", "cuisine", "meal_type", "diet_type",
+    "serving_size_g", "calories", "protein_g", "carbohydrates_g", "fat_g", "fiber_g",
+    "sugar_g", "sodium_mg", "ingredients", "allergens"
+]
+
+df_indb = pd.DataFrame(indb_recipes_raw_data, columns=indb_columns)
+df_indb.to_csv("ml/data/raw/indb_recipes_raw.csv", index=False)
+print(f"Saved INDB raw recipes data: {len(df_indb)} rows.")
+
+print("Raw dataset generation complete.")
